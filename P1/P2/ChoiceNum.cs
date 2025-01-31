@@ -1,4 +1,4 @@
-﻿namespace P2
+﻿namespace ChoiceNum
 {
     internal class ChoiceNum
     {

@@ -1,4 +1,4 @@
-﻿namespace P1
+﻿namespace RSP
 {
     internal class RSP
     {

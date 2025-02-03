@@ -25,9 +25,9 @@
 
                 int correct = 0;
 
-                for(int i = 0;i < numbers.Length; i++)
+                for (int i = 0; i < numbers.Length; i++)
                 {
-                    for(int j = 0; j < guesses.Length; j++)
+                    for (int j = 0; j < guesses.Length; j++)
                     {
                         if (numbers[i] == guesses[j])
                         {
@@ -46,9 +46,6 @@
                     break;
                 }
             }
-
-            
-
         }
     }
 }

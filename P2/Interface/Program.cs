@@ -1,4 +1,4 @@
-﻿namespace P3
+﻿namespace Interface
 {
     internal class Program
     {

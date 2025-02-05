@@ -228,7 +228,7 @@
             private static void Inventory()
             {
                 Console.WriteLine("===========================================================");
-                Console.WriteLine("\n[아이템 목록]");
+                Console.WriteLine("\n[아이템 목록]\n");
 
                 // 장비의 가짓 수 만큼 반복
                 for (int i = 0; i < Item.ItemCount; i++)
@@ -275,13 +275,10 @@
                     {
                         items[i].ShowDescription(true, i + 1, false);
                     }
-                    else
-                    {
-                        Console.WriteLine("-");
-                    }
                 }
 
                 Console.WriteLine("\n0. 나가기");
+                Console.WriteLine("\n착용할 장비의 번호를 입력해주세요.");
 
                 string choice = Console.ReadLine();
                 int choiceNum = int.Parse(choice);
@@ -419,7 +416,7 @@
             private static void Sell()
             {
                 Console.WriteLine("[보유 골드]");
-                Console.WriteLine($" {player.Gold} G");
+                Console.WriteLine($"{player.Gold} G");
                 Console.WriteLine("\n[보유 목록]\n");
 
                 for (int i = 0; i < Item.ItemCount; i++)

@@ -121,16 +121,16 @@
 
             // ======================================= 시작 메뉴 =========================================
             static void Start()
-            {                
-                Console.WriteLine("===========================================================" +
-                "\n\n태초 마을에 오신 여러분 환영합니다." +
-                "\n이곳에서 던전으로 들어가기 전 활동을 할 수 있습니다." +
-                "\n\n1. 상태 보기" +
-                "\n2. 인벤토리" +
-                "\n3. 상점" +
-                "\n4. 휴식" +
-                "\n\n===========================================================" +
-                "\n\n원하시는 행동을 입력해주세요");
+            {
+                Console.WriteLine("===========================================================");
+                Console.WriteLine("\n태초 마을에 오신 여러분 환영합니다.");
+                Console.WriteLine("이곳에서 던전으로 들어가기 전 활동을 할 수 있습니다.");
+                Console.WriteLine("\n1. 상태 보기");
+                Console.WriteLine("2. 인벤토리");
+                Console.WriteLine("3. 상점");
+                Console.WriteLine("4. 휴식");
+                Console.WriteLine("\n===========================================================");
+                Console.WriteLine("\n원하시는 행동을 입력해주세요");
 
                 string choice = Console.ReadLine();
 
@@ -248,9 +248,8 @@
                         break;
                     default:
                         Console.Clear();
-                        Inventory();
                         Console.WriteLine("잘못된 입력입니다.");
-                        
+                        Inventory();
                         break;
                 }
             }
@@ -312,7 +311,7 @@
             {
                 Console.WriteLine("[보유 골드]");
                 Console.WriteLine($" {player.Gold} G");
-                Console.WriteLine("\n[아이템 목록]\n");
+                Console.WriteLine("\n[장비 목록]\n");
 
                 // 아이템 나열
                 for (int i = 0; i < Item.ItemCount; i++)
@@ -321,7 +320,8 @@
                 }
 
                 Console.WriteLine("\n0. 나가기");
-                Console.WriteLine("1. 아이템 구매\n");
+                Console.WriteLine("1. 장비 구매");
+                Console.WriteLine("2. 장비 판매");
 
                 string choice = Console.ReadLine();
                 switch (choice)
@@ -340,6 +340,7 @@
                         break;
                     default:
                         Console.Clear();
+                        Console.WriteLine("잘못된 입력입니다.");
                         Shop();
                         break;
                 }
@@ -366,7 +367,7 @@
                 {
                     case "0":
                         Console.Clear();
-                        Start();
+                        Shop();
                         break;
                     default:
                         Console.Clear();
@@ -382,7 +383,7 @@
                 if (selectedItem.IsBuy)
                 {
                     Console.Clear();
-                    Console.WriteLine("이미 구매한 아이템입니다.");
+                    Console.WriteLine("이미 구매한 물품입니다.");
                 }
                 else if (player.Gold >= selectedItem.Gold)
                 {
@@ -440,6 +441,24 @@
                             Sell();
                             break;
                     }
+
+                    int choiceNum = int.Parse(choice);
+                    choiceNum -= 1; // 인덱스와 유저 입력 맞추기
+                    Item selectedItem = items[choiceNum];
+
+                    if (selectedItem.IsBuy)
+                    {
+                        Console.Clear();
+                        selectedItem.IsBuy = false;
+                        player.Gold += selectedItem.Gold;
+                        Console.WriteLine($"{selectedItem.Name} 판매 완료");
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("\n잘못된 입력입니다.");
+                    }
+                    Sell();
                 }
             }
 

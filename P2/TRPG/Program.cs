@@ -51,16 +51,19 @@
             // 아이템 로직
             public void ShowDescription(bool itemNum = false, int idx = 0, bool price = true)
             {
+                // itemNum이 true일 경우 번호 출력
                 if (itemNum)
                 {
                     Console.Write("{0}. ", idx);
                 }
 
-                if (IsEquip) // 아이템 착용 시
+                // 장비 착용 시 [E] 추가
+                if (IsEquip)
                 {
                     Console.Write("[E]");
                 }
 
+                // 장비 이름 출력
                 Console.Write(Name + " | ");
 
                 // 장비 장착 시 스탯 추가
@@ -74,9 +77,10 @@
                     Console.Write($"Def {(Def >= 0 ? " + " : "")}{Def}");
                 }
 
+                // 장비 설명 출력
                 Console.Write(" | " + Description);
 
-                // 품절 상태 확인
+                // 품절 여부 확인
                 if (price)
                 {
                     string itemStatus = IsBuy ? "구매완료" : Gold + " G";
@@ -170,8 +174,8 @@
                 Console.WriteLine($"Class. {player.Job}");
 
                 // 장비 스탯 추가
-                int plusAtk = GetSumAtk();
-                int plusDef = GetSumDef();
+                int plusAtk = GetAtk();
+                int plusDef = GetDef();
                 Console.WriteLine($"공격력 : {player.Atk + plusAtk} (+{plusAtk})");
                 Console.WriteLine($"방어력 : {player.Def + plusDef} (+{plusDef})");
 
@@ -196,20 +200,21 @@
             }
 
             // 공격력 추가    
-            private static int GetSumAtk()
+            private static int GetAtk()
             {
                 int sum = 0;
 
-                // 전체 아이템 확인
+                // 전체 장비 확인
                 for (int i = 0; i < Item.ItemCount; i++)
                 {
-                    if (items[i].IsEquip) sum += items[i].Atk; // 장착 상태인 아이템의 Atk 합산
+                    // 장착 중인 장비의 스탯 합산
+                    if (items[i].IsEquip) sum += items[i].Atk;
                 }
                 return sum;
             }
 
             // 방어력 추가
-            private static int GetSumDef()
+            private static int GetDef()
             {
                 int sum = 0;
                 for (int i = 0; i < Item.ItemCount; i++)
@@ -225,12 +230,13 @@
                 Console.WriteLine("===========================================================");
                 Console.WriteLine("\n[아이템 목록]");
 
-                for (int i = 0; i < Item.ItemCount; i++) // 아이템의 가짓 수 만큼 출력
+                // 장비의 가짓 수 만큼 반복
+                for (int i = 0; i < Item.ItemCount; i++)
                 {
-                    // 보유 중인 아이템 활성화
+                    // 구매한 장비만 나열
                     if (items[i].IsBuy)
                     {
-                        items[i].ShowDescription(true, i + 1, false); // 템 번호, 인덱스, 가격 순
+                        items[i].ShowDescription(true, i + 1, false); // (장비 번호, 인덱스, 가격)
                     }
                 }
 
@@ -265,10 +271,9 @@
 
                 for (int i = 0; i < Item.ItemCount; i++)
                 {
-                    // 구매한 아이템이 있을 경우
                     if (items[i].IsBuy)
                     {
-                        items[i].ShowDescription(true, i + 1, false); // 템 번호, 인덱스, 가격 순
+                        items[i].ShowDescription(true, i + 1, false);
                     }
                     else
                     {
@@ -297,7 +302,7 @@
             // 장비 장착 및 해제
             private static void EquipToggle(int idx)
             {
-                // 타입 별로 하나의 아이템만 장착
+                // 각 타입 당 하나의 장비만 장착
                 for (int i = 0; i < Item.ItemCount; i++)
                 {
                     if (i != idx && items[i].IsEquip && items[i].Type == items[idx].Type)
@@ -305,7 +310,7 @@
                         items[i].IsEquip = false;
                     }
                 }
-                // 새 아이템 장착 / 해제
+                // 장비 바꾸기
                 items[idx].IsEquip = !items[idx].IsEquip;
             }
 
@@ -316,7 +321,6 @@
                 Console.WriteLine($" {player.Gold} G");
                 Console.WriteLine("\n[장비 목록]\n");
 
-                // 아이템 나열
                 for (int i = 0; i < Item.ItemCount; i++)
                 {
                     items[i].ShowDescription(false, i + 1);
@@ -350,7 +354,7 @@
                 }
             }
 
-            // 아이템 구매
+            // 장비 구매
             private static void Buy()
             {
                 Console.WriteLine("[보유 골드]");
@@ -375,15 +379,21 @@
                         break;
                 }
 
+                // 아래 - 연산을 위한 형 변환
                 int choiceNum = int.Parse(choice);
-                choiceNum -= 1; // 인덱스와 유저 입력 맞추기
+
+                // 인덱스와 유저 입력 맞추기
+                choiceNum -= 1;
+
                 Item selectedItem = items[choiceNum];
 
+                // 중복 구매 방지
                 if (selectedItem.IsBuy)
                 {
                     Console.Clear();
                     Console.WriteLine("이미 구매한 물품입니다.\n");
                 }
+                // 구매 가능
                 else if (player.Gold >= selectedItem.Gold)
                 {
                     Console.Clear();
@@ -391,6 +401,7 @@
                     player.Gold -= selectedItem.Gold;
                     Console.WriteLine($"{selectedItem.Name} 구매완료\n");
                 }
+                // 구매 불가
                 else if (player.Gold <= selectedItem.Gold)
                 {
                     Console.Clear();
@@ -404,7 +415,7 @@
                 Buy();
             }
 
-            // 아이템 판매
+            // 장비 판매
             private static void Sell()
             {
                 Console.WriteLine("[보유 골드]");
@@ -437,7 +448,9 @@
                 }
 
                 float choiceNum = float.Parse(choice);
-                choiceNum -= 1; // 인덱스와 유저 입력 맞추기
+
+                choiceNum -= 1;
+
                 Item selectedItem = items[(int)choiceNum];
 
                 if (selectedItem.IsBuy)

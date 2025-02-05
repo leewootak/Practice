@@ -10,9 +10,9 @@
             public int Atk { get; }
             public int Def { get; }
             public int Hp { get; set; }
-            public int Gold { get; set; }
+            public float Gold { get; set; }
 
-            public Character(string job, int level, int atk, int def, int hp, int gold)
+            public Character(string job, int level, int atk, int def, int hp, float gold)
             {
                 Job = job;
                 Level = level;
@@ -31,12 +31,12 @@
             public int Type { get; } // 무기/방어구 구분
             public int Atk { get; }
             public int Def { get; }
-            public int Gold { get; set; }
+            public float Gold { get; set; }
             public bool IsEquip { get; set; }
             public bool IsBuy { get; set; }
             public static int ItemCount = 0;
 
-            public Item(string name, string description, int type, int atk, int def, int gold, bool isEquip = false)
+            public Item(string name, string description, int type, int atk, int def, float gold, bool isEquip = false)
             {
                 Name = name;
                 Description = description;
@@ -61,7 +61,7 @@
                     Console.Write("[E]");
                 }
 
-                Console.Write(" | ");
+                Console.Write(Name + " | ");
 
                 // 장비 장착 시 스탯 추가
                 if (Atk != 0)
@@ -89,20 +89,23 @@
             private static void ItemSetting()
             {
                 player = new Character("전사", 1, 10, 5, 100, 5000);
-                items = new Item[6];
+                items = new Item[8];
 
-                AddItem(new Item("수련자 갑옷", "수련에 도움을 주는 갑옷입니다.", 0, 0, 9, 1000)); // 첫번째 숫자가 0이면 방어구, 1이면 무기
-                AddItem(new Item("무쇠 갑옷", "무쇠로 만들어진 튼튼한 갑옷입니다.", 0, 0, 5, 2000));
+                AddItem(new Item("회색 츄리닝", "일상에서 입는 갑옷(?)입니다.", 0, 0, 2, 500)); // 첫번째 숫자가 0이면 방어구, 1이면 무기
+                AddItem(new Item("수련자 갑옷", "수련에 도움을 주는 갑옷입니다.", 0, 0, 5, 1000));
+                AddItem(new Item("무쇠 갑옷", "무쇠로 만들어진 튼튼한 갑옷입니다.", 0, 0, 9, 2000));
                 AddItem(new Item("스파르타의 갑옷", "스파르타의 전사들이 사용했다는 전설의 갑옷입니다.", 0, 0, 15, 3500));
                 AddItem(new Item("낡은 검", "쉽게 볼 수 있는 낡은 검입니다.", 1, 2, 0, 600));
                 AddItem(new Item("청동 도끼", "쉽게 볼 수 있는 낡은 검입니다.", 1, 5, 0, 1500));
                 AddItem(new Item("스파르타의 창", "스파르타의 전사들이 사용했다는 전설의 창입니다.", 1, 7, 0, 3000));
+                AddItem(new Item("엑스칼리버", "아무나 사용할 수 없는 검입니다.", 1, 10, 0, 5000));
+
             }
 
             // 아이템 추가
             static void AddItem(Item item)
             {
-                if (Item.ItemCount == 6)
+                if (Item.ItemCount == 8)
                     return;
 
                 items[Item.ItemCount] = item;
@@ -192,7 +195,7 @@
                 }
             }
 
-            // 추가 공격력    
+            // 공격력 추가    
             private static int GetSumAtk()
             {
                 int sum = 0;
@@ -205,7 +208,7 @@
                 return sum;
             }
 
-            // 추가 방어력
+            // 방어력 추가
             private static int GetSumDef()
             {
                 int sum = 0;
@@ -322,6 +325,7 @@
                 Console.WriteLine("\n0. 나가기");
                 Console.WriteLine("1. 장비 구매");
                 Console.WriteLine("2. 장비 판매");
+                Console.WriteLine("\n원하시는 행동을 입력해주세요.");
 
                 string choice = Console.ReadLine();
                 switch (choice)
@@ -340,7 +344,7 @@
                         break;
                     default:
                         Console.Clear();
-                        Console.WriteLine("잘못된 입력입니다.");
+                        Console.WriteLine("잘못된 입력입니다.\n");
                         Shop();
                         break;
                 }
@@ -369,11 +373,6 @@
                         Console.Clear();
                         Shop();
                         break;
-                    default:
-                        Console.Clear();
-                        Console.WriteLine("잘못된 입력입니다.");
-                        Buy();
-                        break;
                 }
 
                 int choiceNum = int.Parse(choice);
@@ -383,24 +382,24 @@
                 if (selectedItem.IsBuy)
                 {
                     Console.Clear();
-                    Console.WriteLine("이미 구매한 물품입니다.");
+                    Console.WriteLine("이미 구매한 물품입니다.\n");
                 }
                 else if (player.Gold >= selectedItem.Gold)
                 {
                     Console.Clear();
                     selectedItem.IsBuy = true;
                     player.Gold -= selectedItem.Gold;
-                    Console.WriteLine($"{selectedItem.Name} 구매완료");
+                    Console.WriteLine($"{selectedItem.Name} 구매완료\n");
                 }
                 else if (player.Gold <= selectedItem.Gold)
                 {
                     Console.Clear();
-                    Console.WriteLine("\nGold가 부족합니다.");
+                    Console.WriteLine("Gold가 부족합니다.\n");
                 }
                 else
                 {
                     Console.Clear();
-                    Console.WriteLine("\n잘못된 입력입니다.");
+                    Console.WriteLine("잘못된 입력입니다.\n");
                 }
                 Buy();
             }
@@ -414,52 +413,46 @@
 
                 for (int i = 0; i < Item.ItemCount; i++)
                 {
-                    // 구매한 아이템이 있을 경우
                     if (items[i].IsBuy)
                     {
-                        items[i].ShowDescription(true, i + 1, false); // 템 번호, 인덱스, 가격 순
+                        items[i].ShowDescription(true, i + 1, false);
                     }
                     else
                     {
                         Console.WriteLine("-");
                     }
-
-                    Console.WriteLine("0. 나가기");
-                    Console.WriteLine("\n판매할 물품의 번호를 입력해주세요.");
-
-                    string choice = Console.ReadLine();
-
-                    switch (choice)
-                    {
-                        case "0":
-                            Console.Clear();
-                            Start();
-                            break;
-                        default:
-                            Console.Clear();
-                            Console.WriteLine("잘못된 입력입니다.");
-                            Sell();
-                            break;
-                    }
-
-                    int choiceNum = int.Parse(choice);
-                    choiceNum -= 1; // 인덱스와 유저 입력 맞추기
-                    Item selectedItem = items[choiceNum];
-
-                    if (selectedItem.IsBuy)
-                    {
-                        Console.Clear();
-                        selectedItem.IsBuy = false;
-                        player.Gold += selectedItem.Gold;
-                        Console.WriteLine($"{selectedItem.Name} 판매 완료");
-                    }
-                    else
-                    {
-                        Console.Clear();
-                        Console.WriteLine("\n잘못된 입력입니다.");
-                    }
-                    Sell();
                 }
+
+                Console.WriteLine("\n0. 나가기");
+                Console.WriteLine("\n판매할 물품의 번호를 입력해주세요.");
+
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "0":
+                        Console.Clear();
+                        Shop();
+                        break;
+                }
+
+                float choiceNum = float.Parse(choice);
+                choiceNum -= 1; // 인덱스와 유저 입력 맞추기
+                Item selectedItem = items[(int)choiceNum];
+
+                if (selectedItem.IsBuy)
+                {
+                    Console.Clear();
+                    selectedItem.IsBuy = false;
+                    player.Gold += (selectedItem.Gold * 0.85f);
+                    Console.WriteLine($"{selectedItem.Name} 판매 완료");
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("잘못된 입력입니다.\n");
+                }
+                Sell();
             }
 
             // ======================================= 휴식 =========================================
@@ -487,6 +480,7 @@
                 }
             }
 
+            // 체력 회복
             private static void Recovery()
             {
                 if (player.Hp >= 100)
